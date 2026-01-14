@@ -150,15 +150,72 @@ Each entry in the JSON array contains:
 
 Multi-value fields are arrays, single-line and multi-line fields are strings.
 
+### Convert JSON to CSV
+
+The [scripts/json_to_csv.py](scripts/json_to_csv.py) script converts the JSON catalog to CSV (comma-separated values) format for use in spreadsheets, databases, and data analysis tools. It:
+
+1. **Reads JSON entries** from the structured JSON catalog
+2. **Maintains canonical field order**: Columns appear in the same order as the original markdown format (filename, Title, Submitted, Description, etc.)
+3. **Normalizes field structure**: Ensures all entries have consistent columns
+4. **Handles field types**:
+   - Single-line fields: Output as-is
+   - Multi-line fields: Preserved with newlines (or converted to spaces with `--no-newlines`)
+   - Array fields: Joined with a configurable delimiter (default: semicolon)
+5. **Produces RFC 4180 compliant CSV**: Proper escaping, quoted fields, UTF-8 encoding
+6. **Flexible output**: Command-line options for customization
+
+#### Usage
+
+Convert the JSON catalog to CSV:
+
+```bash
+# Basic conversion (output to idsignpost.csv)
+uv run python scripts/json_to_csv.py
+
+# Specify custom input/output paths
+uv run python scripts/json_to_csv.py --input my-catalog.json --output my-catalog.csv
+
+# Use pipe character as array delimiter instead of semicolon
+uv run python scripts/json_to_csv.py --output idsignpost.csv --delimiter "|"
+
+# Replace newlines with spaces for single-line fields
+uv run python scripts/json_to_csv.py --output idsignpost.csv --no-newlines
+```
+
+#### Command-Line Options
+
+- `--input`: Input JSON file (default: `idsignpost.json`)
+- `--output`: Output CSV file (default: `idsignpost.csv`)
+- `--delimiter`: Separator for array fields (default: `;`)
+- `--no-newlines`: Replace newlines with spaces in multi-line fields
+
+#### CSV Output Format
+
+The CSV file has columns matching the original markdown field order:
+
+```
+filename,Title,Submitted,Description,Author(s),Free,Available as,Web link,Keywords,...
+resource-name.html,Resource Title,author; 2015-06-09T17:02:00,Description text,Author Name,Yes,Online;PDF,https://example.com,keyword1;keyword2
+```
+
+**Column order**: Fields appear in the canonical order (filename, Title, Submitted, Description, Author(s), Free, Available as, Web link, Additional web link, Keywords, Major group(s), Body), followed by any additional fields alphabetically.
+
+**Field handling**:
+- Single-line fields: Direct value
+- Multi-line fields: Newlines preserved (or space-separated with `--no-newlines`)
+- Array fields: Values joined by chosen delimiter (e.g., `Online;PDF;Publication`)
+
 ## Project Structure
 
 ```plaintext
 ├── idsignpost/              # Source HTML files (legacy FSC pages)
 ├── idsignpost.md            # Generated Markdown catalog
 ├── idsignpost.json          # Generated JSON catalog
+├── idsignpost.csv           # Generated CSV catalog
 ├── scripts/                 # Python scripts
 │   ├── extract_idsignpost.py  # HTML to Markdown converter
-│   └── md_to_json.py          # Markdown to JSON converter
+│   ├── md_to_json.py          # Markdown to JSON converter
+│   └── json_to_csv.py         # JSON to CSV converter
 ├── pyproject.toml           # Python project configuration
 ├── uv.lock                  # Locked dependencies
 └── README.md                # This file
@@ -210,7 +267,8 @@ Multi-value fields use nested bullets:
 2. Run `uv run python scripts/extract_idsignpost.py --test` to verify parsing on a sample
 3. Run `uv run python scripts/extract_idsignpost.py --output idsignpost.md` for full extraction
 4. Optionally run `uv run python scripts/md_to_json.py --output idsignpost.json --pretty` to generate JSON
-5. Review and commit the updated files
+5. Optionally run `uv run python scripts/json_to_csv.py --output idsignpost.csv` to generate CSV
+6. Review and commit the updated files
 
 ## Legacy Context
 
