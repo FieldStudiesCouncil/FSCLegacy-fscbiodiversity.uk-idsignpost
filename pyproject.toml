@@ -1,0 +1,10 @@
+[project]
+name = "idsignpost-extractor"
+version = "0.1.0"
+description = "Extract idsignpost HTML entries into markdown."
+requires-python = ">=3.10"
+dependencies = [
+    "beautifulsoup4>=4.12.3",
+    "markdownify>=0.12.1",
+]
+
