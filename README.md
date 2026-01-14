@@ -2,6 +2,8 @@
 
 Convert legacy FSC idsignpost HTML pages into a single, searchable Markdown catalog of biodiversity identification resources for Britain and Ireland.
 
+The legacy HTML pages can be found at [https://www.fscbiodiversity.uk/idsignpost](<https://www.fscbiodiversity.uk/idsignpost>)
+
 ## Overview
 
 This repository exists to transform legacy idsignpost HTML pages into a unified Markdown catalog. The extraction script parses HTML metadata and content from individual resource pages, producing clean Markdown with standardized formatting for identification guides, keys, and field resources covering British and Irish wildlife and flora.
@@ -281,4 +283,8 @@ This is a preservation project for the Field Studies Council (FSC) biodiversity 
 
 ## License
 
-Content sourced from FSC and various contributors. Please respect original author copyrights and licensing.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+**Software**: The extraction and conversion scripts are freely available under the MIT License.
+
+**Data and Content**: The biodiversity identification resource metadata in the catalog files is sourced from the Field Studies Council's legacy website and various contributors. This catalog data is provided for archival and reference purposes. Users should respect the intellectual property rights of original authors and publishers when using the resource information.
