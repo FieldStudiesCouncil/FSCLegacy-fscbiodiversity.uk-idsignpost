@@ -1,12 +1,12 @@
 # FSC Legacy - Biodiversity ID Signpost Extractor
 
-Convert legacy FSC idsignpost HTML pages into a single, searchable Markdown catalog of biodiversity identification resources for Britain and Ireland.
+Tools to transform legacy Field Studies Council (FSC) biodiversity identification resource HTML pages into a unified Markdown, JSON, and CSV catalog for Britain and Ireland.
 
 The legacy HTML pages can be found at [https://www.fscbiodiversity.uk/idsignpost](<https://www.fscbiodiversity.uk/idsignpost>)
 
 ## Overview
 
-This repository exists to transform legacy idsignpost HTML pages into a unified Markdown catalog. The extraction script parses HTML metadata and content from individual resource pages, producing clean Markdown with standardized formatting for identification guides, keys, and field resources covering British and Irish wildlife and flora.
+This repository exists to transform legacy idsignpost HTML pages into Markdown, JSON, and CSV. The extraction script parses HTML metadata and content from individual resource pages, producing clean output with standardized formatting for identification guides, keys, and field resources covering British and Irish wildlife and flora.
 
 ## What `extract_idsignpost.py` Does
 
