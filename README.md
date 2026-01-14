@@ -94,6 +94,19 @@ uv run python scripts/extract_idsignpost.py --path ./my-html-files --output outp
 
 ### Convert Markdown to JSON
 
+The [scripts/md_to_json.py](scripts/md_to_json.py) script parses the generated Markdown catalog into structured JSON format for programmatic access. It:
+
+1. **Parses Markdown entries** by splitting on `##` heading delimiters
+2. **Distinguishes field types**:
+   - Single-line fields: `Title: value`
+   - Multi-line fields: Values spanning multiple indented lines (joined with newlines)
+   - Multi-value fields: Nested bullet lists, converted to JSON arrays
+3. **Adds filename field**: Each entry includes the source HTML filename
+4. **Preserves text formatting**: Maintains paragraph breaks and structure in multi-line fields
+5. **Outputs clean JSON**: UTF-8 encoded with configurable indentation
+
+#### Usage
+
 Convert the markdown catalog to JSON format:
 
 ```bash
@@ -116,6 +129,26 @@ uv run python scripts/md_to_json.py --output idsignpost.json --indent 0
 - `--output`: Output JSON file (if not specified, outputs to stdout)
 - `--indent`: JSON indentation level (default: 2, use 0 for compact)
 - `--pretty`: Pretty-print JSON with sorted keys
+
+#### JSON Output Format
+
+Each entry in the JSON array contains:
+
+```json
+{
+  "filename": "resource-name.html",
+  "Title": "Resource Title",
+  "Submitted": "author_name; 2015-06-09T17:02:00",
+  "Description": "Detailed description text...",
+  "Author(s)": "Author Name(s)",
+  "Free": "Yes",
+  "Available as": ["Online", "PDF"],
+  "Web link": "https://example.com/resource",
+  "Keywords": "keyword1 keyword2 keyword3"
+}
+```
+
+Multi-value fields are arrays, single-line and multi-line fields are strings.
 
 ## Project Structure
 
