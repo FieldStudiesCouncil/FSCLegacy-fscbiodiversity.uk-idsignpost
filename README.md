@@ -31,14 +31,14 @@ The [scripts/extract_idsignpost.py](scripts/extract_idsignpost.py) script is the
 
 ### Key Features
 
-- **Smart field detection**: Maps CSS classes like `field-name-field-description` to friendly labels using [`FIELD_LABELS`](scripts/extract_idsignpost.py#L18-L26)
+- **Smart field detection**: Maps CSS classes like `field-name-field-description` to friendly labels using [`FIELD_LABELS`](scripts/extract_idsignpost.py#L17-L26)
 - **Text cleaning**: [clean_text](scripts/extract_idsignpost.py#L30-L38) double-unescapes HTML entities, normalizes line breaks, and removes excess whitespace
-- **Label derivation**: [derive_label](scripts/extract_idsignpost.py#L108-L127) extracts field labels from both explicit `.field-label` nodes and CSS class names
-- **Split URL fixing**: [fix_split_urls](scripts/extract_idsignpost.py#L40-L60) repairs URLs that are split across HTML link elements and following text (e.g., when `@N07/collections/...` appears outside the `<a>` tag)
+- **Label derivation**: [derive_label](scripts/extract_idsignpost.py#L102-L119) extracts field labels from both explicit `.field-label` nodes and CSS class names
+- **Split URL fixing**: [fix_split_urls](scripts/extract_idsignpost.py#L41-L66) repairs URLs that are split across HTML link elements and following text (e.g., when `@N07/collections/...` appears outside the `<a>` tag)
 - **URL normalization**: [normalize_markdown_links](scripts/extract_idsignpost.py#L76-L99) decodes percent-encoded characters (`%20` → space, etc.), and wraps all URLs in angle brackets for proper Markdown formatting
-- **Nested list handling**: [render_markdown](scripts/extract_idsignpost.py#L144-L177) intelligently formats single-line vs. multi-line values, including nested bullets for multi-value fields
-- **Date parsing**: [format_submitted](scripts/extract_idsignpost.py#L191-L206) and [to_iso_datetime](scripts/extract_idsignpost.py#L209-L217) convert "Submitted by X on Day, DD/MM/YYYY - HH:MM" to structured format
-- **Selective processing**: [gather_files](scripts/extract_idsignpost.py#L180-L188) globs `*.html` files, excluding `about.html`
+- **Nested list handling**: [render_markdown](scripts/extract_idsignpost.py#L173-L208) intelligently formats single-line vs. multi-line values, including nested bullets for multi-value fields
+- **Date parsing**: [format_submitted](scripts/extract_idsignpost.py#L220-L236) and [to_iso_datetime](scripts/extract_idsignpost.py#L238-L246) convert "Submitted by X on Day, DD/MM/YYYY - HH:MM" to structured format
+- **Selective processing**: [gather_files](scripts/extract_idsignpost.py#L209-L217) globs `*.html` files, excluding `about.html`
 
 ## Installation
 
