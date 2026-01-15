@@ -33,40 +33,40 @@ def json_to_csv(
     preserve_newlines: bool = True,
 ) -> tuple[list[str], list[dict]]:
     """Convert JSON entries to CSV-compatible format.
-    
+
     Args:
         json_entries: List of entry dictionaries from JSON
         array_delimiter: Delimiter for joining array fields (default: ";")
         preserve_newlines: Keep newlines in multi-line fields (default: True)
-    
+
     Returns:
         Tuple of (fieldnames, rows) suitable for csv.DictWriter
     """
     if not json_entries:
         return [], []
-    
+
     # Collect all unique field names to create consistent columns
     all_fields = set()
     for entry in json_entries:
         all_fields.update(entry.keys())
-    
+
     # Order fields according to FIELD_ORDER, then add any extras alphabetically
     fieldnames = []
     for field in FIELD_ORDER:
         if field in all_fields:
             fieldnames.append(field)
             all_fields.remove(field)
-    
+
     # Add any remaining fields alphabetically
     fieldnames.extend(sorted(all_fields))
-    
+
     # Convert entries for CSV output
     rows = []
     for entry in json_entries:
         row = {}
         for field in fieldnames:
             value = entry.get(field, "")
-            
+
             # Handle different value types
             if isinstance(value, list):
                 # Join array values with delimiter
@@ -79,9 +79,9 @@ def json_to_csv(
                     row[field] = value
             else:
                 row[field] = str(value)
-        
+
         rows.append(row)
-    
+
     return fieldnames, rows
 
 
@@ -116,12 +116,12 @@ def parse_args() -> argparse.Namespace:
 def main() -> None:
     """Main entry point."""
     args = parse_args()
-    
+
     input_path = Path(args.input)
     if not input_path.exists():
         print(f"Error: Input file '{input_path}' not found.", file=sys.stderr)
         sys.exit(1)
-    
+
     # Load JSON
     try:
         json_text = input_path.read_text(encoding="utf-8")
@@ -129,18 +129,18 @@ def main() -> None:
     except json.JSONDecodeError as e:
         print(f"Error: Failed to parse JSON: {e}", file=sys.stderr)
         sys.exit(1)
-    
+
     if not isinstance(entries, list):
         print("Error: JSON root must be an array of entries.", file=sys.stderr)
         sys.exit(1)
-    
+
     # Convert to CSV format
     fieldnames, rows = json_to_csv(
         entries,
         array_delimiter=args.delimiter,
         preserve_newlines=not args.no_newlines,
     )
-    
+
     # Write CSV
     output_path = Path(args.output)
     try:
@@ -148,7 +148,7 @@ def main() -> None:
             writer = csv.DictWriter(f, fieldnames=fieldnames)
             writer.writeheader()
             writer.writerows(rows)
-        
+
         print(
             f"Wrote {len(rows)} entries to {output_path}",
             file=sys.stderr,

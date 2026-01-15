@@ -40,10 +40,10 @@ def clean_text(value: str) -> str:
 
 def fix_split_urls(fragment: str) -> str:
     """Fix URLs that are split between a link and following text.
-    
+
     E.g., <a href="...url">...url</a>@N07/rest handles cases where the @ symbol
     and following path were outside the link tag in the original HTML.
-    
+
     We need to:
     1. Extract the URL continuation after </a>
     2. Append it to the href attribute
@@ -53,7 +53,7 @@ def fix_split_urls(fragment: str) -> str:
     # Pattern: <a href="([^"]*)">([^<]*)</a>([@/][^\s<]*)
     # Captures: (1) href value, (2) link text, (3) URL continuation
     pattern = r'<a\s+href="([^"]*)">([^<]*)</a>([@/][^\s<]*)'
-    
+
     def fix_match(match: re.Match) -> str:
         href = match.group(1)
         link_text = match.group(2)
@@ -61,7 +61,7 @@ def fix_split_urls(fragment: str) -> str:
         complete_url = href + continuation
         complete_text = link_text + continuation
         return f'<a href="{complete_url}">{complete_text}</a>'
-    
+
     return re.sub(pattern, fix_match, fragment)
 
 
@@ -134,7 +134,9 @@ def extract_fields(main: BeautifulSoup) -> list[tuple[str, list[str]]]:
     return fields
 
 
-def extract_main(file_path: Path) -> tuple[dict[str, str], list[tuple[str, list[str]]]] | None:
+def extract_main(
+    file_path: Path,
+) -> tuple[dict[str, str], list[tuple[str, list[str]]]] | None:
     html_text = file_path.read_text(encoding="utf-8", errors="replace")
     soup = BeautifulSoup(html_text, "html.parser")
     main = soup.find("div", id="main")
@@ -248,7 +250,7 @@ def to_iso_datetime(date_text: str) -> str | None:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Extract <div id=\"main\"> content from idsignpost HTML files."
+        description='Extract <div id="main"> content from idsignpost HTML files.'
     )
     parser.add_argument(
         "--path",
@@ -283,7 +285,7 @@ def main() -> None:
     for file_path in files:
         result = extract_main(file_path)
         if result is None:
-            print(f"Skipping {file_path}: no <div id=\"main\"> found.", file=sys.stderr)
+            print(f'Skipping {file_path}: no <div id="main"> found.', file=sys.stderr)
             continue
         data, fields = result
         sections.append(render_markdown(file_path.name, data, fields))

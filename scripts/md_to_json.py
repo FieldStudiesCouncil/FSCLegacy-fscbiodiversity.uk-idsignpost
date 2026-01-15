@@ -16,22 +16,22 @@ def parse_markdown_entry(lines: list[str]) -> dict[str, str | list[str]]:
     current_field = None
     current_value: list[str] = []
     in_multiline = False
-    
+
     for line in lines:
         # Skip empty lines at the start
         if not line.strip():
             continue
-            
+
         # Match field: value pattern
-        field_match = re.match(r'^- ([^:]+):\s*(.*)$', line)
+        field_match = re.match(r"^- ([^:]+):\s*(.*)$", line)
         if field_match:
             # Save previous field if exists
             if current_field:
                 _save_field(entry, current_field, current_value)
-            
+
             current_field = field_match.group(1)
             value_part = field_match.group(2).strip()
-            
+
             if value_part:
                 # Single-line value
                 current_value = [value_part]
@@ -41,36 +41,38 @@ def parse_markdown_entry(lines: list[str]) -> dict[str, str | list[str]]:
                 current_value = []
                 in_multiline = True
             continue
-        
+
         # Match nested list item
-        nested_match = re.match(r'^  - (.+)$', line)
+        nested_match = re.match(r"^  - (.+)$", line)
         if nested_match and current_field:
             value = nested_match.group(1).strip()
             if value:
                 current_value.append(value)
             in_multiline = True
             continue
-        
+
         # Match indented content (multi-line field value)
-        indent_match = re.match(r'^  (.*)$', line)
+        indent_match = re.match(r"^  (.*)$", line)
         if indent_match and current_field and in_multiline:
             content = indent_match.group(1)
             current_value.append(content)
             continue
-    
+
     # Save the last field
     if current_field:
         _save_field(entry, current_field, current_value)
-    
+
     return entry
 
 
-def _save_field(entry: dict[str, str | list[str]], field: str, values: list[str]) -> None:
+def _save_field(
+    entry: dict[str, str | list[str]], field: str, values: list[str]
+) -> None:
     """Save a field to the entry dictionary."""
     if not values:
         entry[field] = ""
         return
-    
+
     # Join multi-line content
     if len(values) == 1:
         entry[field] = values[0]
@@ -90,26 +92,26 @@ def parse_markdown_file(file_path: Path) -> list[dict[str, str | list[str]]]:
     """Parse the entire markdown file into a list of entries."""
     content = file_path.read_text(encoding="utf-8")
     entries = []
-    
+
     # Split by ## headings
-    sections = re.split(r'^## (.+)$', content, flags=re.MULTILINE)
-    
+    sections = re.split(r"^## (.+)$", content, flags=re.MULTILINE)
+
     # First element is content before first heading (should be empty or whitespace)
     sections = sections[1:]  # Skip it
-    
+
     # Process pairs of (filename, content)
     for i in range(0, len(sections), 2):
         if i + 1 >= len(sections):
             break
-            
+
         filename = sections[i].strip()
-        content_lines = sections[i + 1].strip().split('\n')
-        
+        content_lines = sections[i + 1].strip().split("\n")
+
         entry_data = parse_markdown_entry(content_lines)
         entry_data["filename"] = filename
-        
+
         entries.append(entry_data)
-    
+
     return entries
 
 
@@ -144,14 +146,14 @@ def parse_args() -> argparse.Namespace:
 def main() -> None:
     """Main entry point."""
     args = parse_args()
-    
+
     input_path = Path(args.input)
     if not input_path.exists():
         print(f"Error: Input file '{input_path}' not found.", file=sys.stderr)
         sys.exit(1)
-    
+
     entries = parse_markdown_file(input_path)
-    
+
     # Prepare JSON output
     indent = args.indent if args.indent > 0 else None
     json_output = json.dumps(
@@ -160,7 +162,7 @@ def main() -> None:
         ensure_ascii=False,
         sort_keys=args.pretty,
     )
-    
+
     if args.output:
         Path(args.output).write_text(json_output + "\n", encoding="utf-8")
         print(f"Wrote {len(entries)} entries to {args.output}", file=sys.stderr)
