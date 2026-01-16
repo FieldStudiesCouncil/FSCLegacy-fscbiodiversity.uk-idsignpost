@@ -8,3 +8,9 @@ dependencies = [
     "markdownify>=0.12.1",
 ]
 
+[dependency-groups]
+dev = [
+    "ruff>=0.14.13",
+    "ty>=0.0.12",
+]
+
